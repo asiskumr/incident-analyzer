@@ -1,3 +1,5 @@
+
+/* Light Theme Defaults */
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -103,6 +105,77 @@ pre {
 
 #case-selector button.active {
   background-color: #0a4a7b;
+  color: white;
+  font-weight: bold;
+}
+
+/* ===================== */
+/* DARK THEME OVERRIDES  */
+/* ===================== */
+
+body.dark-theme {
+  background-color: #121212;
+  color: #eee;
+}
+
+body.dark-theme h1,
+body.dark-theme h2 {
+  color: #cceeff;
+}
+
+body.dark-theme textarea,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="password"],
+body.dark-theme input[type="number"] {
+  background-color: #1e1e1e;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+body.dark-theme button {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+body.dark-theme button:hover {
+  background-color: #444;
+}
+
+body.dark-theme .case-section {
+  background-color: #1c1c1c;
+  border: 1px solid #444;
+}
+
+body.dark-theme pre {
+  background-color: #1e1e1e;
+  border-left: 4px solid #4fc3f7;
+  color: #ccc;
+}
+
+body.dark-theme .device-button {
+  background-color: #2a3b4c;
+  border: 1px solid #4fc3f7;
+  color: #90caf9;
+}
+
+body.dark-theme .device-button:hover {
+  background-color: #37556d;
+}
+
+
+body.dark-theme #case-selector button {
+  background-color: #2a2a2a;
+  color: #ddd;
+  border: 1px solid #444;
+}
+
+body.dark-theme #case-selector button:hover {
+  background-color: #444;
+}
+
+body.dark-theme #case-selector button.active {
+  background-color: #0077cc;
   color: white;
   font-weight: bold;
 }
