@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tools</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <h1>Incident Analyzer </h1>
+    <div style="margin-bottom: 15px;">
+        <button onclick="toggleTheme()" style="float: right;">🌓 Toggle Theme</button>
+        <button onclick="resetAll()">🔁 Reset All</button>
+    </div>
+
+
+    <!-- 🔧 AI Settings
+    <div id="aiSettings">
+        <h3>AI Assistant Settings</h3>
+        <label>
+            <input type="checkbox" id="enableAiToggle" onchange="toggleAi()" />
+            Enable AI Parsing
+        </label><br />
+        <label for="apiKeyInput">OpenAI API Key:</label>
+        <input type="password" id="apiKeyInput" placeholder="Paste your OpenAI API key" oninput="storeApiKey()"
+            style="width: 60%;" />
+        <p style="font-size: small; color: gray;">Key is stored in session only and never uploaded.</p>
+    </div> -->
+
+    <hr />
+    <p><strong>Paste the incident details or CLI output below to analyze and generate summaries/commands.</strong></p>
+
+    <!-- Case Selector -->
+    <div id="case-selector">
+        <button onclick="showCase('case1')">Case 1: Devices Down (Ping)</button>
+        <button onclick="showCase('case2')">Case 2: Interfaces Down</button>
+        <button onclick="showCase('case3')">Case 3: BGP Neighbor Down</button>
+    </div>
+    <hr />
+
+    <!-- Case 1: Multiple Devices Down -->
+    <div id="case1" class="case-section">
+        <h2>Case 1: Multiple Devices Down (Ping Generator + Result Analyzer)</h2>
+
+        <!-- Step 1: Incident Description -->
+        <label><strong>Step 1:</strong> Paste incident description with device IPs</label>
+        <textarea id="case1Input" placeholder="Example: device-name-IP-XYZ..." rows="6"></textarea>
+        <button onclick="generatePingCommands()">Generate Ping Commands</button>
+        <pre id="case1Output"></pre>
+        <button onclick="copyToClipboard('case1Output')">Copy Ping Commands</button>
+
+        <!-- Step 2: Ping Output -->
+        <label><strong>Step 2:</strong> Paste Ping Results (from CMD)</label>
+        <textarea id="pingResultInput" placeholder="Paste ping results from CMD here..." rows="6"></textarea>
+        <button onclick="analyzePingResults()">Analyze Ping Results</button>
+
+        <!-- Summary Output -->
+        <div id="pingSummaryOutput">
+            <h4>Status Summary:</h4>
+            <p id="deviceCountSummary">Total Devices: 0 | Up: 0 | Down: 0</p>
+            <pre id="upDevicesOutput">Up Devices:</pre>
+            <pre id="downDevicesOutput">Down Devices:</pre>
+        </div>
+    </div>
+
+
+
+    <!-- Case 2: Interface Down Incident -->
+    <div id="case2" class="case-section">
+        <h2>Case 2: Interfaces Down Incident (Command Generator + CLI Analyzer)</h2>
+
+        <!-- Step 1: Paste Incident Description -->
+        <label><strong>Step 1:</strong> Paste Incident Description with Down Interfaces & Devices</label>
+        <textarea id="case2DescriptionInput" placeholder="Paste Case 2 incident description here..."
+            rows="8"></textarea>
+        <br />
+        <button onclick="parseCase2Description()">Parse Description & Generate Device Commands</button>
+        <button onclick="copyInterfaceListSummary()">List Interfaces & Copy to Clipboard</button>
+
+
+        <!-- Device Buttons will appear here -->
+        <div id="deviceButtonsContainer" style="margin-top: 10px;"></div>
+
+        <!-- Step 2: Paste CLI Output -->
+        <label style="margin-top: 20px;"><strong>Step 2:</strong> Paste CLI Output After Running Commands</label>
+        <textarea id="case2CliOutputInput" placeholder="Paste combined CLI output here..." rows="10"></textarea>
+        <br />
+        <button onclick="analyzeCase2CliOutput()">Analyze CLI Output</button>
+        <button onclick="copyToClipboard('case2AnalysisResult')">Copy Resolution to Clipboard</button>
+        <!-- Summary Output -->
+        <div id="case2SummaryOutput" style="margin-top: 15px;">
+            <h4>Analysis & Resolution Summary:</h4>
+            <pre id="case2AnalysisResult"></pre>
+            <!-- <div id="case2SummaryContent"></div>  -->
+        </div>
+    </div>
+
+
+    <!-- Case 3: BGP Neighbor Down -->
+    <div id="case3" class="case-section" style="display: none;">
+        <h2>Case 3: BGP Neighbor Down (Summary Generator)</h2>
+
+        <!-- Step 1: Description input -->
+        <label><strong>Step 1:</strong> Paste incident description (only neighbors in this will be analyzed)</label>
+        <textarea id="case3Input" placeholder="Paste incident description mentioning BGP neighbors..."
+            rows="4"></textarea>
+
+        <!-- Step 2: CLI Output input -->
+        <label><strong>Step 2:</strong> Paste CLI output of 'show ip bgp all summary'</label>
+        <textarea id="case3CliOutputInput" placeholder="Paste CLI output of 'show ip bgp all summary'..."
+            rows="10"></textarea>
+
+        <!-- Action buttons -->
+        <button onclick="analyzeBGP()">Analyze BGP Summary</button>
+        <button onclick="copyToClipboard('case3Output')">Copy Resolution to Clipboard</button>
+
+        <!-- Output -->
+        <pre id="case3Output"></pre>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
