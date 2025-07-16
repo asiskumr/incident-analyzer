@@ -1,0 +1,108 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f7f9fc;
+  color: #333;
+}
+
+h1 {
+  color: #0a4a7b;
+  font-size: 26px;
+}
+
+h2 {
+  color: #0f5c8d;
+  margin-top: 30px;
+}
+
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  font-family: monospace;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  background-color: #fff;
+  color: #000;
+}
+
+button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  margin-top: 5px;
+  font-weight: bold;
+  background-color: #0a4a7b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #06385a;
+}
+
+pre {
+  background-color: #eef2f6;
+  padding: 10px;
+  border-left: 4px solid #0a4a7b;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+#case-selector button {
+  margin-bottom: 10px;
+}
+
+.case-section {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.device-button {
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
+  color: #1565c0;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.device-button:hover {
+  background-color: #8fb8da;
+}
+
+
+#case-selector button {
+  margin: 5px 10px 5px 0;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  background-color: #7ba8e0;
+
+  color: #333;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+#case-selector button:hover {
+  background-color: #ddd;
+  transform: scale(1.02);
+}
+
+#case-selector button.active {
+  background-color: #0a4a7b;
+  color: white;
+  font-weight: bold;
+}
