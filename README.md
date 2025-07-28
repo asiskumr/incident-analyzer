@@ -26,11 +26,6 @@ This is a lightweight, browser-based tool to analyze common networking incidents
 - Accepts BGP summary & optional SD-WAN control output.
 - Detects session status, uptime, and suggests Next Plan of Action (NPOA).
 
----
-
-## 🎨 Themes
-
-Supports both **Light** and **Dark** themes. Toggle anytime using the 🌗 **Toggle Theme** button.
 
 ---
 
@@ -68,16 +63,6 @@ If you are unsure whether this tool complies with your company’s usage policie
 
 ---
 
-## 💻 Usage
-
-1. Clone or download this repository.
-2. Open `index.html` in your browser.
-3. Paste incident details as per the selected case.
-4. Click on relevant buttons to parse, analyze, or copy results.
-
-> ⚠️ Best viewed in modern browsers like Chrome, Edge, or Firefox.
-
----
 
 ## 📁 File Structure
 
@@ -86,6 +71,6 @@ If you are unsure whether this tool complies with your company’s usage policie
 ├── index.html        # Main HTML interface
 ├── style.css         # All layout, theme and style rules
 ├── script.js         # JavaScript logic for parsing, generation, and analysis
-├── README.md         # Project overview and instructions (this file)
+├── README.md         # Project overview and instructions 
 
 
