@@ -265,8 +265,10 @@ async function parseCase2Description() {
 // fall back function : handle both interface description patterns (old & new)
 function parseWithFallback(input) {
     const devicePattern = /^[\w\-]+-\d{1,3}(\.\d{1,3}){3}(?:-\d+)?$/gim;
-    const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-.]+).*?on Node:\s*([\w\-]+)\s*is Down/gi;
-    const newPatternRegex = /Interface\s+([\w\d\/\-.]+)\s+on Node\s+([\w\-]+)\s+is Down/gi;
+    // const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-.]+).*?on Node:\s*([\w\-]+)\s*is Down/gi;
+    // const newPatternRegex = /Interface\s+([\w\d\/\-.]+)\s+on Node\s+([\w\-]+)\s+is Down/gi;
+    const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-. ]+?)(?=\s+on Node:)\s+on Node:\s*([\w\-]+)\s*is Down/gi;
+    const newPatternRegex = /Interface\s+([\w\d\/\-. ]+?)(?=\s+on Node)\s+on Node\s+([\w\-]+)\s+is Down/gi;
 
     let devices = {};
 
