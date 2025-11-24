@@ -202,7 +202,7 @@ function analyzePingResults() {
 
         copyText += "\n\n=== Resolution Notes ===\n";
         copyText += `\n Cause:\nThe affected device(s) are currently unreachable via ICMP ping. This is commonly due to power loss (input power unavailable) or complete link failure upstream.\n`;
-        copyText += `\n Current Status:\nThe following ${count} switch(es) are not reachable from the monitoring system:\n${deviceLines}\n`;
+        copyText += `\n Current Status:\nThe following ${count} switch(es) are not reachable:\n${deviceLines}\n`;
         copyText += `\n NPOA:\nMonitoring will continue for the next interval. If the device(s) remain unreachable, upstream investigation or physical engagement of Field staff may be required.\n`;
     }
 
@@ -267,8 +267,9 @@ function parseWithFallback(input) {
     const devicePattern = /^[\w\-]+-\d{1,3}(\.\d{1,3}){3}(?:-\d+)?$/gim;
     // const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-.]+).*?on Node:\s*([\w\-]+)\s*is Down/gi;
     // const newPatternRegex = /Interface\s+([\w\d\/\-.]+)\s+on Node\s+([\w\-]+)\s+is Down/gi;
-    const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-. ]+?)(?=\s+on Node:)\s+on Node:\s*([\w\-]+)\s*is Down/gi;
-    const newPatternRegex = /Interface\s+([\w\d\/\-. ]+?)(?=\s+on Node)\s+on Node\s+([\w\-]+)\s+is Down/gi;
+    
+    const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-.]+)(?:\s*[·\w\d ]*)?\s+on Node:\s*([\w\-]+)\s*is Down/gi;
+    const newPatternRegex = /Interface\s+([\w\d\/\-.]+)(?:\s*[·\w\d ]*)?\s+on Node\s+([\w\-]+)\s+is Down/gi;
 
     let devices = {};
 
@@ -490,11 +491,7 @@ function runManualCase2CliParser(cliText) {
         nextPlanOfAction.push("Since the interface is either up or in access mode, we can close this incident.");
     } else {
         nextPlanOfAction.push("Monitor the interface for additional flaps or persistent downtime.");
-        nextPlanOfAction.push("If issue persists, raise TASK/SAP to engage Field Support (FS) to physically check on-site.");
-        nextPlanOfAction.push("Verify physical cabling, patch panel connections, and SFP modules (if applicable).");
-        nextPlanOfAction.push("Coordinate with remote-end team to check peer interface status.");
-        nextPlanOfAction.push("Review logs for flap patterns or errors.");
-        nextPlanOfAction.push("Consider hardware replacement if reoccurrence is frequent.");
+        nextPlanOfAction.push("If issue persists, raise TASK/1SAP to engage FS to physically check on-site.");
     }
 
     return {
