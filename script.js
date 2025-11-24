@@ -131,7 +131,7 @@ function generatePingCommands() {
     }
     commands.push('\n');
     document.getElementById("case1Output").textContent = commands.join("\n");
-    autoCopy(commands.join("\n"), " Unique ping commands copied!");
+    autoCopy(commands.join("\n"), `${seen.size} devices IP copied`);
 }
 
 
