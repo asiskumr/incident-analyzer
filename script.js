@@ -289,14 +289,14 @@ function parseWithFallback(input) {
         const portIsPresent = maybePort && /^\d+$/.test(maybePort);
 
         const hostnameParts = parts.slice(0, ipIndex);
-        const hostname = hostnameParts.join("-").trim().toLowerCase();
+        const hostname = hostnameParts.join("-").trim().toUpperCase();
 
         devices[hostname] = { ip, interfaces: [] };
     }
 
     // Helper to assign interface to correct device
     const assignInterface = (intf, hostname) => {
-        const key = hostname.toLowerCase();
+        const key = hostname.toUpperCase();
         if (devices[key]) {
             devices[key].interfaces.push(intf);
         } else {
