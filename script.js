@@ -118,7 +118,7 @@ function generatePingCommands() {
     const ipRegex = /\b(\d{1,3}\.){3}\d{1,3}\b/;
     const seen = new Set();
     let commands = [];
-
+    commands.push('cls \n'); 
     for (let line of lines) {
         const match = line.match(ipRegex);
         if (match) {
@@ -129,9 +129,9 @@ function generatePingCommands() {
             }
         }
     }
-
+    commands.push('\n');
     document.getElementById("case1Output").textContent = commands.join("\n");
-    autoCopy(commands.join("\n"), "✅ Unique ping commands copied!");
+    autoCopy(commands.join("\n"), " Unique ping commands copied!");
 }
 
 
@@ -175,7 +175,7 @@ function analyzePingResults() {
         const isDown = isUnreachableFromDifferentIP || isRequestTimedOut || isAllLost || is100PercentLoss;
 
         const name = deviceMap[ip] || "Unknown";
-        const label = `${ip} - ${name}`;
+        const label = `${ip} - ${name.toUpperCase()}`;
 
         if (isDown) {
             downList.push({ ip, name, label });
@@ -200,13 +200,14 @@ function analyzePingResults() {
         const count = downList.length;
         const deviceLines = downList.map(d => `${d.ip} - ${d.name}`).join("\n");
 
-        copyText += "\n\n=== Resolution Notes ===\n";
-        copyText += `\n Cause:\nThe affected device(s) are currently unreachable via ICMP ping. This is commonly due to power loss (input power unavailable) or complete link failure upstream.\n`;
-        copyText += `\n Current Status:\nThe following ${count} switch(es) are not reachable:\n${deviceLines}\n`;
-        copyText += `\n NPOA:\nMonitoring will continue for the next interval. If the device(s) remain unreachable, upstream investigation or physical engagement of Field staff may be required.\n`;
+        copyText += "\n\n=== Update ===\n";
+        copyText += `\n\n "Total Devices: ${total} | Up: ${upList.length} | Down: ${downList.length}\n\n`;
+        copyText += `\n Cause:\nThe affected device(s) are currently unreachable via ICMP ping. May be complete link failure upstream.\n`;
+        copyText += `\n Current Status:\nThe following ${count} switches are not reachable:\n${deviceLines}\n`;
+        copyText += `\n NPOA:\nMonitoring will continue for the next interval. If the devices remain unreachable, upstream investigation or physical engagement of FS may be required.\n`;
     }
 
-    autoCopy(copyText, "Device status + resolution copied to clipboard!");
+    autoCopy(copyText, "Device status copied!");
 }
 
 
@@ -586,9 +587,10 @@ function copyInterfaceListSummary() {
         return;
     }
 
-    let summaryText = " Interface Count Summary:\n";
+    let summaryText = " Update:\n";
     for (const [deviceKey, entry] of Object.entries(deviceMap)) {
-        summaryText += `- Device ${deviceKey} (${entry.ip}): ${entry.interfaces.length} interfaces\n`;
+        summaryText += `\n`;
+        summaryText += ` --> Device ${deviceKey} (${entry.ip}): ${entry.interfaces.length} interfaces\n`;
         entry.interfaces.forEach(iface => {
             summaryText += `   • ${iface}\n`;
         });
