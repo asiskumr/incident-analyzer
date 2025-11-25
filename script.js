@@ -266,61 +266,73 @@ async function parseCase2Description() {
 // fall back function : handle both interface description patterns (old & new)
 function parseWithFallback(input) {
     const devicePattern = /^[\w\-]+-\d{1,3}(\.\d{1,3}){3}(?:-\d+)?$/gim;
-    // const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-.]+).*?on Node:\s*([\w\-]+)\s*is Down/gi;
-    // const newPatternRegex = /Interface\s+([\w\d\/\-.]+)\s+on Node\s+([\w\-]+)\s+is Down/gi;
-    
-    const oldPatternRegex = /Interface\s*:\s*([\w\d\/\-.]+)(?:\s*[·\w\d ]*)?\s+on Node:\s*([\w\-]+)\s*is Down/gi;
-    const newPatternRegex = /Interface\s+([\w\d\/\-.]+)(?:\s*[·\w\d ]*)?\s+on Node\s+([\w\-]+)\s+is Down/gi;
+
+    // ✅ Final combined regex (handles all interface types and descriptions)
+    const combinedRegex = /Interface\s*:?\s*([\w\d\/\-.]+(?:\s+\d+)?)(?:.*?)(?=\s+on Node:?)\s+on Node:?\s*([\w\-]+)\s*is Down/gi;
 
     let devices = {};
 
-    // Extract devices from "Device details" section
+    // ✅ Extract devices from "Device details" section
     const deviceLines = input.match(devicePattern) || [];
     for (const line of deviceLines) {
         const ipMatch = line.match(/\b\d{1,3}(?:\.\d{1,3}){3}\b/);
         const ip = ipMatch ? ipMatch[0] : "";
-
         if (!ip) continue;
 
         const parts = line.split("-");
         const ipIndex = parts.findIndex(p => p === ip);
         if (ipIndex === -1) continue;
 
-        const maybePort = parts[ipIndex + 1];
-        const portIsPresent = maybePort && /^\d+$/.test(maybePort);
-
         const hostnameParts = parts.slice(0, ipIndex);
         const hostname = hostnameParts.join("-").trim().toUpperCase();
 
-        devices[hostname] = { ip, interfaces: [] };
+        // ✅ Only create if not exists (avoid overwriting interfaces later)
+        if (!devices[hostname]) {
+            devices[hostname] = { ip, interfaces: [] };
+        }
     }
 
-    // Helper to assign interface to correct device
+    // ✅ Helper to assign interface to correct device
     const assignInterface = (intf, hostname) => {
-        const key = hostname.toUpperCase();
-        if (devices[key]) {
-            devices[key].interfaces.push(intf);
-        } else {
-            if (!devices[key]) {
-                devices[key] = { ip: "", interfaces: [] };
-            }
-            devices[key].interfaces.push(intf);
+        const key = hostname.toUpperCase(); // Normalize to uppercase
+        if (!devices[key]) {
+            devices[key] = { ip: "", interfaces: [] };
         }
+        devices[key].interfaces.push(intf);
     };
 
-    // Handle both patterns
+    // ✅ Use combined regex for all patterns
     let match;
-    while ((match = oldPatternRegex.exec(input)) !== null) {
-        const [, intf, hostname] = match;
-        assignInterface(intf, hostname);
-    }
-
-    while ((match = newPatternRegex.exec(input)) !== null) {
+    while ((match = combinedRegex.exec(input)) !== null) {
         const [, intf, hostname] = match;
         assignInterface(intf, hostname);
     }
 
     return devices;
+}
+
+// --- Copy Interface Summary to Clipboard ---
+function copyInterfaceListSummary() {
+    const deviceMap = window.case2ParsedMap || {};
+    if (!Object.keys(deviceMap).length) {
+        alert("No device/interface data found. Please parse first.");
+        return;
+    }
+
+    let summaryText = `Interfaces details of ${Object.keys(deviceMap).length} devices:\n\n`;
+    for (const [deviceKey, entry] of Object.entries(deviceMap)) {
+        summaryText += "\n"
+        summaryText += ` -->  Device ${deviceKey.toUpperCase()} (${entry.ip}): ${entry.interfaces.length} interfaces\n`;
+        entry.interfaces.forEach(iface => {
+            summaryText += `   • ${iface}\n`;
+        });
+    }
+
+    navigator.clipboard.writeText(summaryText).then(() => {
+        alert(`Interfaces details copied for ${Object.keys(deviceMap).length} devices:\n\n`);
+    }).catch(() => {
+        alert("Failed to copy summary to clipboard.");
+    });
 }
 
 
@@ -512,29 +524,7 @@ function runManualCase2CliParser(cliText) {
 // // --- AI-powered CLI Output Parser ---
 // async function runAiCase2CliParser(cliText) {
 //     const prompt = `
-// You are a senior network engineer. Analyze the following CLI output related to interface issues on LAN switches.
 
-// Your task:
-// - Provide a resolution summary using the following three technical categories.
-// - Each category should be clear, professional, and concise.
-
-// Categories:
-// Causes:
-// - Mention likely physical/logical causes based on the CLI, interface status, logs, etc.
-
-// Current Status:
-// - Mention interface state (up/down), switchport mode (access/trunk/L3), and interface utilization if visible.
-
-// NPOA:
-// - Provide specific next steps like cable checks, SFP swap, coordination with remote side, raising TASK/SAP, etc.
-
-// CLI Output:
-// ${cliText}
-// `;
-
-//     const aiResponse = await callOpenAi(prompt);
-//     return aiResponse;
-// }
 
 // --- Analyze CLI output and display result ---
 async function analyzeCase2CliOutput() {
@@ -546,15 +536,6 @@ async function analyzeCase2CliOutput() {
 
     let analysisResultText = "";
 
-    // if (isAiEnabled()) {
-    //     try {
-    //         analysisResultText = await runAiCase2CliParser(cliText);
-    //     } catch (e) {
-    //         console.error("AI parser failed:", e);
-    //         alert("AI analysis failed. Try manual analysis.");
-    //         return;
-    //     }
-    // } else {
 
         const analysis = runManualCase2CliParser(cliText);
         if (!analysis) return;
@@ -579,64 +560,6 @@ async function analyzeCase2CliOutput() {
     }
 }
 
-// --- Copy Interface Summary to Clipboard ---
-function copyInterfaceListSummary() {
-    const deviceMap = window.case2ParsedMap || {};
-    if (!Object.keys(deviceMap).length) {
-        alert("No device/interface data found. Please parse first.");
-        return;
-    }
-
-    let summaryText = " Update:\n";
-    for (const [deviceKey, entry] of Object.entries(deviceMap)) {
-        summaryText += `\n`;
-        summaryText += ` --> Device ${deviceKey} (${entry.ip}): ${entry.interfaces.length} interfaces\n`;
-        entry.interfaces.forEach(iface => {
-            summaryText += `   • ${iface}\n`;
-        });
-    }
-
-    navigator.clipboard.writeText(summaryText).then(() => {
-        alert("Interface summary copied to clipboard!");
-    }).catch(() => {
-        alert("Failed to copy summary to clipboard.");
-    });
-}
-
-// --- Check if AI mode enabled ---
-// function isAiEnabled() {
-//     const checkbox = document.getElementById("enableAi");
-//     return checkbox ? checkbox.checked : false;
-// }
-
-// --- Call OpenAI API ---
-// Replace YOUR_API_KEY below with your actual OpenAI API key
-// async function callOpenAi(prompt) {
-//     const apiKey = "";  // add my api key
-
-//     const response = await fetch("https://api.openai.com/v1/chat/completions", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Authorization": `Bearer ${apiKey}`
-//         },
-//         body: JSON.stringify({
-//             model: "gpt-4o-mini",
-//             messages: [{ role: "user", content: prompt }],
-//             temperature: 0.2,
-//             max_tokens: 800
-//         })
-//     });
-
-//     if (!response.ok) {
-//         throw new Error(`OpenAI API error: ${response.statusText}`);
-//     }
-
-//     const data = await response.json();
-//     const content = data.choices[0].message.content.trim();
-
-//     return content;
-// }
 
 
 
